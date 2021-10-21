@@ -1,7 +1,7 @@
 from enum import unique
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
+from dataclasses import dataclass
 from flask_sqlalchemy import SQLAlchemy
-import jsonify
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
@@ -12,8 +12,8 @@ class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), unique=False, index=True)
     year = db.Column(db.Integer, index=True)
-    cast = db.PickleType()
-    genres = db.PickleType()
+    cast = db.Column(db.String(100))
+    genres = db.Column(db.String(100))
 
     def to_dict(self):
       return{
@@ -28,6 +28,11 @@ db.create_all()
 @app.route('/')
 def index():
     return render_template('table.html', title='Movies')
+  
+@app.route('/movies/')
+def movies(): 
+  movies = Movie.query.all()
+  return movies
 
 @app.route('/api/data')
 def data():
@@ -37,8 +42,7 @@ def data():
     search = request.args.get('search[value]')
     if search:
         query = query.filter(db.or_(
-            Movie.name.like(f'%{search}%'),
-            Movie.email.like(f'%{search}%')
+            Movie.title.like(f'%{search}%'),
         ))
     total_filtered = query.count()
 
@@ -51,7 +55,7 @@ def data():
             break
         col_title = request.args.get(f'columns[{col_index}][data]')
         if col_title not in ['title', 'year']:
-            col_title = 'name'
+            col_title = 'title'
         descending = request.args.get(f'order[{i}][dir]') == 'desc'
         col = getattr(Movie, col_title)
         if descending:

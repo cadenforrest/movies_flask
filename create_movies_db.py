@@ -12,7 +12,7 @@ def create_movies_db():
   print(data)
   n = 0
   for movie in data: 
-    m = Movie(title = movie['title'], year = movie['year'], cast = movie['cast'], genres = movie['genres'])
+    m = Movie(title = movie['title'], year = movie['year'], cast = json.dumps(movie['cast']), genres = json.dumps(movie['genres']))
     db.session.add(m)
     print ("added!")
     n = n+1
