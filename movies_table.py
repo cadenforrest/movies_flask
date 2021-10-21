@@ -1,5 +1,7 @@
+from enum import unique
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+import jsonify
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
@@ -8,7 +10,7 @@ db = SQLAlchemy(app)
 
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64), unique=True, index=True)
+    title = db.Column(db.String(100), unique=False, index=True)
     year = db.Column(db.Integer, index=True)
     cast = db.PickleType()
     genres = db.PickleType()
@@ -47,11 +49,11 @@ def data():
         col_index = request.args.get(f'order[{i}][column]')
         if col_index is None:
             break
-        col_name = request.args.get(f'columns[{col_index}][data]')
-        if col_name not in ['name', 'age', 'email']:
-            col_name = 'name'
+        col_title = request.args.get(f'columns[{col_index}][data]')
+        if col_title not in ['title', 'year']:
+            col_title = 'name'
         descending = request.args.get(f'order[{i}][dir]') == 'desc'
-        col = getattr(Movie, col_name)
+        col = getattr(Movie, col_title)
         if descending:
             col = col.desc()
         order.append(col)
@@ -65,12 +67,12 @@ def data():
     query = query.offset(start).limit(length)
 
     # response
-    return {
-        'data': [Movie.to_dict() for Movie in query],
+    return jsonify({
+        'data': [movie.to_dict() for movie in query],
         'recordsFiltered': total_filtered,
         'recordsTotal': Movie.query.count(),
         'draw': request.args.get('draw', type=int),
-    }
+    })
 
 
 if __name__ == '__main__':
