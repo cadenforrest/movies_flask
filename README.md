@@ -4,7 +4,7 @@ We assume that python 3, venv, and Flask are installed on your machine.
 - Navigate to your project folder in a bash terminal and create a virtualenvironment 
 
 ```
-cd Caden_Westmoreland/
+cd movies_flask/
 python3 -m venv venv
 source venv/bin/activate
 ```
