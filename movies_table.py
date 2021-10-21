@@ -1,6 +1,4 @@
-from enum import unique
 from flask import Flask, render_template, request, jsonify
-from dataclasses import dataclass
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -27,18 +25,12 @@ db.create_all()
 
 @app.route('/')
 def index():
-    return render_template('table.html', title='Movies')
+    return render_template('table.html', title='Searchable Movies!')
   
-@app.route('/movies/')
-def movies(): 
-  movies = Movie.query.all()
-  return movies
 
 @app.route('/api/data')
 def data():
     query = Movie.query
-
-    # search filter
     search = request.args.get('search[value]')
     if search:
         query = query.filter(db.or_(
@@ -46,7 +38,6 @@ def data():
         ))
     total_filtered = query.count()
 
-    # sorting
     order = []
     i = 0
     while True:
@@ -64,13 +55,9 @@ def data():
         i += 1
     if order:
         query = query.order_by(*order)
-
-    # pagination
     start = request.args.get('start', type=int)
     length = request.args.get('length', type=int)
     query = query.offset(start).limit(length)
-
-    # response
     return jsonify({
         'data': [movie.to_dict() for movie in query],
         'recordsFiltered': total_filtered,

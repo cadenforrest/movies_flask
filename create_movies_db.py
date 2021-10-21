@@ -12,7 +12,16 @@ def create_movies_db():
   print(data)
   n = 0
   for movie in data: 
-    m = Movie(title = movie['title'], year = movie['year'], cast = json.dumps(movie['cast']), genres = json.dumps(movie['genres']))
+    #remove disallowed characters from cast and genres string
+    disallowed_characters = '"[]'
+    cast = json.dumps(movie['cast'])
+    genres = json.dumps(movie['genres'])
+    
+    for character in disallowed_characters:
+      cast = cast.replace(character, "")
+      genres = genres.replace(character, "")
+      
+    m = Movie(title = movie['title'], year = movie['year'], cast = cast, genres = genres)
     db.session.add(m)
     print ("added!")
     n = n+1
