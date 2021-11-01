@@ -14,7 +14,7 @@ pip install -r requirements.txt
 pip3 install -r requirements.txt <- this is for users who have pip3
 ```
 - You'll notice that there are two python files, `movies_table.py` and `create_movies_db.py`. This app uses SQLite in the background to manage queries and ensure fast load times.
-– Run `python3 create_movies_db.py` to create an SQLite database from `movies.json`. This will create a `db.sqlite` file in your project directory. 
+- Run `python3 create_movies_db.py` to create an SQLite database from `movies.json`. This will create a `db.sqlite` file in your project directory. 
 - Your flask app will now be ready to rock and roll. Run `python3 movies_table.py` to start the development server. In your terminal, you should see something like this, depending on available ports:
 ```
 * Serving Flask app 'movies_table' (lazy loading)
