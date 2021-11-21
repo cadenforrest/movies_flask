@@ -2,6 +2,7 @@ from __init__ import db
 from models import Movie
 import json
 
+
 def create_movies_db():
     """read JSON data from movies.json and populate the database with the data"""
     # open the movies.json file and populate the database with movie objects
