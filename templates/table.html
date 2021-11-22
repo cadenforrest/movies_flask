@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_tables.html" %}
 
 {% block content %}
   <table id="data" class="table table-striped">
@@ -8,6 +8,7 @@
         <th>Year</th>
         <th>Cast</th>
         <th>Genres</th>
+        <th> Watched? </th>
       </tr>
     </thead>
     <tbody>
@@ -18,7 +19,7 @@
 {% block scripts %}
   <script>
     $(document).ready(function () {
-      $('#data').DataTable({
+      var table = $('#data').DataTable({
         ajax: '/api/data',
         serverSide: true,
         columns: [
@@ -26,6 +27,10 @@
           {data: 'year'},
           {data: 'cast', orderable: false},
           {data: 'genres', orderable: false},
+          {data: null, title: 'Watched?', wrap: true, "render": function (item){ 
+            return '<div class="btn-group"> <button type="button" onclick="href = {{ url_for('main.background_process_test') }}" class="btn btn-warning">Watched!</button></div>' 
+            } 
+          },
         ],
       });
     });
