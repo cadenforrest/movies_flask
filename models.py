@@ -14,6 +14,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
+    movies = db.relationship("Movie", secondary=movie_identifier)
 
 
 class Movie(db.Model):

@@ -18,6 +18,10 @@ def profile():
 def index():
     return render_template("table.html", title="Searchable Movies!")
 
+@main.route("/background_process_test", methods=["GET", "POST"])
+def background_process_test():
+    print("Hello")
+    return("nothing")
 
 @main.route("/api/data")
 def data():
